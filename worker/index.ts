@@ -137,6 +137,22 @@ export default {
 
     const url = new URL(request.url)
 
+    if (url.pathname === "/api/admin/applications") {
+      const auth = request.headers.get("Authorization")
+      if (auth !== `Bearer ${env.ADMIN_TOKEN}`) {
+        return jsonResponse({ error: "unauthorized" }, 401, origin)
+      }
+
+      try {
+        const { results } = await env.DB.prepare(
+          "SELECT * FROM applications ORDER BY submitted_at DESC"
+        ).all()
+        return jsonResponse({ applications: results }, 200, origin)
+      } catch (dbError) {
+        return jsonResponse({ error: "database_error" }, 500, origin)
+      }
+    }
+
     if (url.pathname !== "/api/application") {
       return jsonResponse({ error: "not_found" }, 404, origin)
     }
@@ -257,6 +273,20 @@ export default {
     }
 
     const submittedAt = new Date().toISOString()
+
+    // Save to database
+    try {
+      await env.DB.prepare(
+        "INSERT INTO applications (name, email, signal, contribution, submitted_at) VALUES (?, ?, ?, ?, ?)"
+      )
+      .bind(application.name, application.email, application.signal, application.contribution, submittedAt)
+      .run()
+    } catch (dbError) {
+      console.error(
+        JSON.stringify({ event: "database_insert_failed", error: dbError.message }),
+      )
+      // We continue even if DB fails so the user still gets their email notification
+    }
 
     const safeName = application.name.replace(/[\r\n]/g, " ").slice(0, 100)
 

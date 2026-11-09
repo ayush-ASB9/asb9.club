@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useRef, useState } from 'react'
+import AdminDashboard from './AdminDashboard'
 
 const paths = [
   { id: 'build', label: 'I build', find: 'A sharper problem', detail: 'Prototype in public. Find the person who sees the edge you missed.' },
@@ -144,134 +145,140 @@ function App() {
 
   return (
     <main>
-      <div className={`cursor ${cursor.active ? 'cursor--active' : ''}`} style={{ transform: `translate3d(${cursor.x}px,${cursor.y}px,0)` }} />
-      <header className="nav">
-        <a className="wordmark" href="#top" aria-label="ASB9 Club home"><Mark small /> ASB9 <span>/ CLUB</span></a>
-        <nav aria-label="Main navigation">
-          <a href="#ethos">Ethos</a><a href="#network">Network</a><a href="#apply">Apply</a>
-        </nav>
-      </header>
+      {window.location.pathname === '/admin' ? (
+        <AdminDashboard />
+      ) : (
+        <>
+          <div className={`cursor ${cursor.active ? 'cursor--active' : ''}`} style={{ transform: `translate3d(${cursor.x}px,${cursor.y}px,0)` }} />
+          <header className="nav">
+            <a className="wordmark" href="#top" aria-label="ASB9 Club home"><Mark small /> ASB9 <span>/ CLUB</span></a>
+            <nav aria-label="Main navigation">
+              <a href="#ethos">Ethos</a><a href="#network">Network</a><a href="#apply">Apply</a>
+            </nav>
+          </header>
 
-      <section className="hero" id="top">
-        <p className="eyebrow hero-index">Private signal · Public ambition</p>
-        <div className="hero-mark"><Mark /></div>
-        <h1><span>For the ones</span><span>already in motion.</span></h1>
-        <p className="hero-copy">A selective club for young builders, founders, developers and researchers who would rather make the future than predict it.</p>
-        <a className="scroll-cue" href="#ethos"><span>Enter the club</span><i /></a>
-      </section>
+          <section className="hero" id="top">
+            <p className="eyebrow hero-index">Private signal · Public ambition</p>
+            <div className="hero-mark"><Mark /></div>
+            <h1><span>For the ones</span><span>already in motion.</span></h1>
+            <p className="hero-copy">A selective club for young builders, founders, developers and researchers who would rather make the future than predict it.</p>
+            <a className="scroll-cue" href="#ethos"><span>Enter the club</span><i /></a>
+          </section>
 
-      <section className="manifesto" id="ethos">
-        <p className="eyebrow reveal">01 / The premise</p>
-        <p className="manifesto-line reveal">ASB9 isn't about<br />collecting <em>connections.</em></p>
-        <p className="manifesto-line manifesto-line--right reveal">It's about what happens<br />when the <em>right people</em><br />find each other.</p>
-        <aside className="margin-note reveal">No audience.<br />No passive membership.<br />No prescribed path.</aside>
-      </section>
+          <section className="manifesto" id="ethos">
+            <p className="eyebrow reveal">01 / The premise</p>
+            <p className="manifesto-line reveal">ASB9 isn't about<br />collecting <em>connections.</em></p>
+            <p className="manifesto-line manifesto-line--right reveal">It's about what happens<br />when the <em>right people</em><br />find each other.</p>
+            <aside className="margin-note reveal">No audience.<br />No passive membership.<br />No prescribed path.</aside>
+          </section>
 
-      <section className="discovery">
-        <div className="section-head reveal">
-          <p className="eyebrow">02 / Find your position</p>
-          <p>Contribution is the price of admission.<br />Curiosity is the only uniform.</p>
-        </div>
-        <div className="discovery-grid reveal">
-          <div className="path-list" role="tablist" aria-label="Choose how you contribute">
-            {paths.map((path, index) => (
-              <button key={path.id} role="tab" aria-selected={activePath === index} onClick={() => setActivePath(index)}>
-                <span>0{index + 1}</span>{path.label}<b>↗</b>
-              </button>
-            ))}
-          </div>
-          <div className="path-result" role="tabpanel" aria-live="polite">
-            <p>You may find</p>
-            <h2>{paths[activePath].find}</h2>
-            <p>{paths[activePath].detail}</p>
-            <span>ASB9 / POSITION {activePath + 1}</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="network" id="network">
-        <div className="section-head reveal">
-          <p className="eyebrow">03 / The field</p>
-          <p>Not a directory. A live surface for collisions.</p>
-        </div>
-        <div className="network-stage reveal">
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            {nodes.slice(0, -1).map((node, i) => {
-              const next = nodes[(i + 2) % nodes.length]
-              return <line key={node.label} x1={node.x} y1={node.y} x2={next.x} y2={next.y} />
-            })}
-          </svg>
-          {nodes.map((node, index) => (
-            <button
-              key={node.label}
-              className={`node ${activeNode === index ? 'node--active' : ''}`}
-              style={{ left: `${node.x}%`, top: `${node.y}%` }}
-              onMouseEnter={() => setActiveNode(index)}
-              onFocus={() => setActiveNode(index)}
-              onClick={() => setActiveNode(index)}
-              aria-label={`Explore ${node.label}`}
-            ><i /><span>{node.label}</span></button>
-          ))}
-          <div className="node-detail">
-            <span>0{activeNode + 1}</span>
-            <h2>{nodes[activeNode].label}</h2>
-            <p>{nodes[activeNode].copy}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="selection">
-        <p className="eyebrow reveal">04 / Selection</p>
-        <h2 className="reveal">Signal recognizes<br /><em>signal.</em></h2>
-        <div className="selection-list reveal">
-          <article><span>01</span><h3>Show your work</h3><p>Finished or not. We care about momentum, judgment and the questions pulling you forward.</p></article>
-          <article><span>02</span><h3>Meet a member</h3><p>A conversation, not an interview. We look for generosity, intensity and something distinct.</p></article>
-          <article><span>03</span><h3>Enter with intent</h3><p>Arrive ready to offer a perspective, a problem, a skill—or the first move on something new.</p></article>
-        </div>
-      </section>
-
-      <section className="apply" id="apply">
-        <div className="apply-intro reveal">
-          <p className="eyebrow">05 / Knock</p>
-          <h2>The door is<br /><em>not hidden.</em></h2>
-          <p>It simply asks that you arrive as yourself. Tell us what has your attention and what you want to make possible.</p>
-        </div>
-        {submissionState === 'success' ? (
-          <div className="success" role="status"><Mark small /><h2>Signal received.</h2><p>Thank you. Your note has been sent for review.</p></div>
-        ) : (
-          <form className="application-form reveal" onSubmit={submit} aria-busy={submissionState === 'submitting'}>
-            <label><span>Your name</span><input required name="name" autoComplete="name" placeholder="First and last" disabled={submissionState === 'submitting'} /></label>
-            <label><span>Your email</span><input required type="email" name="email" autoComplete="email" placeholder="you@somewhere.com" disabled={submissionState === 'submitting'} /></label>
-            <label className="wide"><span>What are you working on—or unable to stop thinking about?</span><textarea required name="signal" rows={3} placeholder="Tell us plainly. Links are welcome." disabled={submissionState === 'submitting'} /></label>
-            <label className="wide"><span>What would you contribute to the room?</span><textarea required name="contribution" rows={3} placeholder="A skill, instinct, question or unfinished idea." disabled={submissionState === 'submitting'} /></label>
-            <div className="application-honeypot" aria-hidden="true">
-              <label>Leave this field empty<input name="website" tabIndex={-1} autoComplete="off" /></label>
+          <section className="discovery">
+            <div className="section-head reveal">
+              <p className="eyebrow">02 / Find your position</p>
+              <p>Contribution is the price of admission.<br />Curiosity is the only uniform.</p>
             </div>
-            {submissionState === 'error' && <p className="submission-error" role="alert">{submissionMessage}</p>}
-            <p className="privacy-note">Your information will only be used to review your membership application.</p>
-            <button className="submit" type="submit" disabled={submissionState === 'submitting'}>
-              <span>{submissionState === 'submitting' ? 'Sending your signal…' : 'Send your signal'}</span><b>↗</b>
-            </button>
-          </form>
-        )}
-      </section>
+            <div className="discovery-grid reveal">
+              <div className="path-list" role="tablist" aria-label="Choose how you contribute">
+                {paths.map((path, index) => (
+                  <button key={path.id} role="tab" aria-selected={activePath === index} onClick={() => setActivePath(index)}>
+                    <span>0{index + 1}</span>{path.label}<b>↗</b>
+                  </button>
+                ))}
+              </div>
+              <div className="path-result" role="tabpanel" aria-live="polite">
+                <p>You may find</p>
+                <h2>{paths[activePath].find}</h2>
+                <p>{paths[activePath].detail}</p>
+                <span>ASB9 / POSITION {activePath + 1}</span>
+              </div>
+            </div>
+          </section>
 
-      <footer>
-        <div><Mark small /><span>ASB9 CLUB<br />Est. for what comes next</span></div>
-        <button
-          className="hold"
-          onPointerDown={beginHold}
-          onPointerUp={endHold}
-          onPointerLeave={endHold}
-          onKeyDown={(e) => e.key === 'Enter' && document.querySelector('#apply')?.scrollIntoView({ behavior: 'smooth' })}
-        >
-          <span className="hold-fill" style={{ width: `${hold}%` }} />
-          <span className="hold-copy">{hold > 0 ? 'Hold your intention' : 'Press and hold to apply'}</span>
-        </button>
-        <p>For builders of things,<br />systems and new realities.</p>
-      </footer>
+          <section className="network" id="network">
+            <div className="section-head reveal">
+              <p className="eyebrow">03 / The field</p>
+              <p>Not a directory. A live surface for collisions.</p>
+            </div>
+            <div className="network-stage reveal">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                {nodes.slice(0, -1).map((node, i) => {
+                  const next = nodes[(i + 2) % nodes.length]
+                  return <line key={node.label} x1={node.x} y1={node.y} x2={next.x} y2={next.y} />
+                })}
+              </svg>
+              {nodes.map((node, index) => (
+                <button
+                  key={node.label}
+                  className={`node ${activeNode === index ? 'node--active' : ''}`}
+                  style={{ left: `${node.x}%`, top: `${node.y}%` }}
+                  onMouseEnter={() => setActiveNode(index)}
+                  onFocus={() => setActiveNode(index)}
+                  onClick={() => setActiveNode(index)}
+                  aria-label={`Explore ${node.label}`}
+                ><i /><span>{node.label}</span></button>
+              ))}
+              <div className="node-detail">
+                <span>0{activeNode + 1}</span>
+                <h2>{nodes[activeNode].label}</h2>
+                <p>{nodes[activeNode].copy}</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="selection">
+            <p className="eyebrow reveal">04 / Selection</p>
+            <h2 className="reveal">Signal recognizes<br /><em>signal.</em></h2>
+            <div className="selection-list reveal">
+              <article><span>01</span><h3>Show your work</h3><p>Finished or not. We care about momentum, judgment and the questions pulling you forward.</p></article>
+              <article><span>02</span><h3>Meet a member</h3><p>A conversation, not an interview. We look for generosity, intensity and something distinct.</p></article>
+              <article><span>03</span><h3>Enter with intent</h3><p>Arrive ready to offer a perspective, a problem, a skill—or the first move on something new.</p></article>
+            </div>
+          </section>
+
+          <section className="apply" id="apply">
+            <div className="apply-intro reveal">
+              <p className="eyebrow">05 / Knock</p>
+              <h2>The door is<br /><em>not hidden.</em></h2>
+              <p>It simply asks that you arrive as yourself. Tell us what has your attention and what you want to make possible.</p>
+            </div>
+            {submissionState === 'success' ? (
+              <div className="success" role="status"><Mark small /><h2>Signal received.</h2><p>Thank you. Your note has been sent for review.</p></div>
+            ) : (
+              <form className="application-form reveal" onSubmit={submit} aria-busy={submissionState === 'submitting'}>
+                <label><span>Your name</span><input required name="name" autoComplete="name" placeholder="First and last" disabled={submissionState === 'submitting'} /></label>
+                <label><span>Your email</span><input required type="email" name="email" autoComplete="email" placeholder="you@somewhere.com" disabled={submissionState === 'submitting'} /></label>
+                <label className="wide"><span>What are you working on—or unable to stop thinking about?</span><textarea required name="signal" rows={3} placeholder="Tell us plainly. Links are welcome." disabled={submissionState === 'submitting'} /></label>
+                <label className="wide"><span>What would you contribute to the room?</span><textarea required name="contribution" rows={3} placeholder="A skill, instinct, question or unfinished idea." disabled={submissionState === 'submitting'} /></label>
+                <div className="application-honeypot" aria-hidden="true">
+                  <label>Leave this field empty<input name="website" tabIndex={-1} autoComplete="off" /></label>
+                </div>
+                {submissionState === 'error' && <p className="submission-error" role="alert">{submissionMessage}</p>}
+                <p className="privacy-note">Your information will only be used to review your membership application.</p>
+                <button className="submit" type="submit" disabled={submissionState === 'submitting'}>
+                  <span>{submissionState === 'submitting' ? 'Sending your signal…' : 'Send your signal'}</span><b>↗</b>
+                </button>
+              </form>
+            )}
+          </section>
+
+          <footer>
+            <div><Mark small /><span>ASB9 CLUB<br />Est. for what comes next</span></div>
+            <button
+              className="hold"
+              onPointerDown={beginHold}
+              onPointerUp={endHold}
+              onPointerLeave={endHold}
+              onKeyDown={(e) => e.key === 'Enter' && document.querySelector('#apply')?.scrollIntoView()}
+            >
+              <span className="hold-fill" style={{ width: `${hold}%` }} />
+              <span className="hold-copy">{hold > 0 ? 'Hold your intention' : 'Press and hold to apply'}</span>
+            </button>
+            <p>For builders of things,<br />systems and new realities.</p>
+          </footer>
+        </>
+      )}
     </main>
   )
-}
+  }
 
 export default App

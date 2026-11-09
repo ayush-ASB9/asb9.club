@@ -11,6 +11,13 @@
     "ALLOWED_ORIGIN": "https://asb9.club",
     "RESEND_FROM_EMAIL": "ASB9 CLUB <applications@asb9.club>"
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "asb9-applications",
+      "database_id": "${D1_DATABASE_ID}"
+    }
+  ],
   "ratelimits": [
     {
       "name": "SUBMISSION_LIMITER",
