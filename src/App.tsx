@@ -145,7 +145,7 @@ function App() {
 
   return (
     <main>
-      {window.location.pathname === '/admin' ? (
+      {new URLSearchParams(window.location.search).get('admin') === 'true' ? (
         <AdminDashboard />
       ) : (
         <>
