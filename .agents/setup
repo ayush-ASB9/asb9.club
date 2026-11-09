@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "--- Starting setup: $(date) ---"
+
+# Install toolchain
+echo "Installing toolchain..."
+if command -v mise >/dev/null; then
+  mise install --locked
+else
+  echo "mise not found, skipping toolchain install."
+fi
+
+# Install dependencies
+echo "Installing dependencies..."
+pnpm install --frozen-lockfile
+
+# Ensure env templates exist
+if [ ! -f .env ]; then
+  echo "Creating .env from .env.example..."
+  [ -f .env.example ] && cp .env.example .env || echo "No .env.example found, skipping."
+fi
+
+echo "--- Setup completed: $(date) ---"
