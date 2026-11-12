@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const paths = [
   { id: 'build', label: 'I build', find: 'A sharper problem', detail: 'Prototype in public. Find the person who sees the edge you missed.' },
@@ -31,13 +31,8 @@ function App() {
   const [activePath, setActivePath] = useState(0)
   const [activeNode, setActiveNode] = useState(2)
   const [cursor, setCursor] = useState({ x: -40, y: -40, active: false })
-  const [submissionState, setSubmissionState] = useState<'idle' | 'submitting' | 'error' | 'success'>('idle')
-  const [submissionMessage, setSubmissionMessage] = useState('')
   const [hold, setHold] = useState(0)
   const holdTimer = useRef<number | null>(null)
-  const submissionLock = useRef(false)
-  const idempotencyKey = useRef<string | null>(null)
-  const lastSubmission = useRef<string | null>(null)
 
   useEffect(() => {
     const move = (event: PointerEvent) => setCursor((c) => ({ ...c, x: event.clientX, y: event.clientY }))
@@ -61,7 +56,7 @@ function App() {
 
   const beginHold = () => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelector('#apply')?.scrollIntoView()
+      window.location.assign('/apply')
       return
     }
     const started = Date.now()
@@ -70,8 +65,7 @@ function App() {
       setHold(next)
       if (next === 100) {
         if (holdTimer.current) window.clearInterval(holdTimer.current)
-        document.querySelector('#apply')?.scrollIntoView({ behavior: 'smooth' })
-        window.setTimeout(() => setHold(0), 500)
+        window.location.assign('/apply')
       }
     }, 16)
   }
@@ -80,66 +74,6 @@ function App() {
     if (holdTimer.current) window.clearInterval(holdTimer.current)
     holdTimer.current = null
     if (hold < 100) setHold(0)
-  }
-
-  const submit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (submissionLock.current) return
-    submissionLock.current = true
-    setSubmissionState('submitting')
-    setSubmissionMessage('')
-
-    const apiUrl = import.meta.env.VITE_APPLICATION_API_URL
-    if (!apiUrl) {
-      setSubmissionState('error')
-      setSubmissionMessage('The application service is not configured yet. Please try again later.')
-      submissionLock.current = false
-      return
-    }
-
-    const formData = new FormData(event.currentTarget)
-    const requestBody = JSON.stringify({
-      name: formData.get('name'),
-      email: formData.get('email'),
-      signal: formData.get('signal'),
-      contribution: formData.get('contribution'),
-      website: formData.get('website'),
-    })
-
-    try {
-      if (!idempotencyKey.current || lastSubmission.current !== requestBody) {
-        idempotencyKey.current = crypto.randomUUID()
-        lastSubmission.current = requestBody
-      }
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Idempotency-Key': idempotencyKey.current,
-        },
-        body: requestBody,
-      })
-      const result: { ok?: boolean } = await response.json()
-
-      if (!response.ok || result.ok !== true) {
-        setSubmissionState('error')
-        setSubmissionMessage(
-          response.status === 429
-            ? 'Too many attempts from this connection. Please wait a minute and try again.'
-            : response.status === 400 || response.status === 413
-              ? 'Please check your application details and try again.'
-              : 'We could not confirm delivery. Please try again in a moment.',
-        )
-        return
-      }
-
-      setSubmissionState('success')
-    } catch {
-      setSubmissionState('error')
-      setSubmissionMessage('We could not reach the application service. Please check your connection and try again.')
-    } finally {
-      submissionLock.current = false
-    }
   }
 
   return (
@@ -236,24 +170,20 @@ function App() {
           <h2>The door is<br /><em>not hidden.</em></h2>
           <p>It simply asks that you arrive as yourself. Tell us what has your attention and what you want to make possible.</p>
         </div>
-        {submissionState === 'success' ? (
-          <div className="success" role="status"><Mark small /><h2>Signal received.</h2><p>Thank you. Your note has been sent for review.</p></div>
-        ) : (
-          <form className="application-form reveal" onSubmit={submit} aria-busy={submissionState === 'submitting'}>
-            <label><span>Your name</span><input required name="name" autoComplete="name" placeholder="First and last" disabled={submissionState === 'submitting'} /></label>
-            <label><span>Your email</span><input required type="email" name="email" autoComplete="email" placeholder="you@somewhere.com" disabled={submissionState === 'submitting'} /></label>
-            <label className="wide"><span>What are you working on—or unable to stop thinking about?</span><textarea required name="signal" rows={3} placeholder="Tell us plainly. Links are welcome." disabled={submissionState === 'submitting'} /></label>
-            <label className="wide"><span>What would you contribute to the room?</span><textarea required name="contribution" rows={3} placeholder="A skill, instinct, question or unfinished idea." disabled={submissionState === 'submitting'} /></label>
-            <div className="application-honeypot" aria-hidden="true">
-              <label>Leave this field empty<input name="website" tabIndex={-1} autoComplete="off" /></label>
-            </div>
-            {submissionState === 'error' && <p className="submission-error" role="alert">{submissionMessage}</p>}
-            <p className="privacy-note">Your information will only be used to review your membership application.</p>
-            <button className="submit" type="submit" disabled={submissionState === 'submitting'}>
-              <span>{submissionState === 'submitting' ? 'Sending your signal…' : 'Send your signal'}</span><b>↗</b>
-            </button>
-          </form>
-        )}
+        <div className="apply-cta reveal">
+          <p className="eyebrow">Cohort 01 · Applications open</p>
+          <h3>We pick people, <em>not ideas.</em></h3>
+          <p>You don’t need a startup, a co-founder, or a plan. You need proof that you make things, and a mind worth betting on.</p>
+          <ul>
+            <li><span>Spots</span>9</li>
+            <li><span>Format</span>Solo or teams of up to 3</li>
+            <li><span>Length</span>4 weeks · Online</li>
+            <li><span>Cost</span>Free</li>
+            <li><span>Ages</span>14–20</li>
+          </ul>
+          <a className="submit" href="/apply"><span>Start your application</span><b>↗</b></a>
+          <p className="privacy-note">Eight short sections, one at a time. Your answers save as you go.</p>
+        </div>
       </section>
 
       <footer>
@@ -263,7 +193,7 @@ function App() {
           onPointerDown={beginHold}
           onPointerUp={endHold}
           onPointerLeave={endHold}
-          onKeyDown={(e) => e.key === 'Enter' && document.querySelector('#apply')?.scrollIntoView({ behavior: 'smooth' })}
+          onKeyDown={(e) => e.key === 'Enter' && window.location.assign('/apply')}
         >
           <span className="hold-fill" style={{ width: `${hold}%` }} />
           <span className="hold-copy">{hold > 0 ? 'Hold your intention' : 'Press and hold to apply'}</span>

@@ -112,6 +112,16 @@ button { border: 0; }
 .submit:disabled { opacity: .7; cursor: wait; }
 .submit b { font-size: 22px; font-weight: 300; transition: transform .2s; }
 .submit:not(:disabled):hover b { transform: translate(5px, -5px); }
+.apply-cta { padding-top: 8vh; align-self: start; }
+.apply-cta .eyebrow { color: #5f5e58; }
+.apply-cta h3 { margin: 22px 0 18px; font-weight: 300; font-size: clamp(38px, 4.4vw, 64px); line-height: .95; letter-spacing: -.045em; }
+.apply-cta h3 em { font-family: var(--serif); }
+.apply-cta > p:not(.eyebrow):not(.privacy-note) { font-size: 14px; line-height: 1.7; max-width: 480px; margin: 0; }
+.apply-cta ul { list-style: none; margin: 36px 0 0; padding: 0; border-top: 1px solid rgba(10,10,9,.2); }
+.apply-cta li { display: grid; grid-template-columns: 110px 1fr; padding: 14px 0; border-bottom: 1px solid rgba(10,10,9,.2); font-size: 14px; }
+.apply-cta li span { font: 9px var(--mono); text-transform: uppercase; letter-spacing: .1em; color: #5f5e58; align-self: center; }
+.apply-cta .submit { color: var(--ivory); margin-top: 40px; }
+.apply-cta .privacy-note { margin-top: 14px; }
 .success { align-self: center; text-align: center; }
 .success .mark { fill: var(--black); }
 .success h2 { font: italic 300 58px var(--serif); margin-bottom: 5px; }
@@ -173,4 +183,71 @@ footer > p { text-align: right; color: var(--grey); font: 10px/1.6 var(--mono); 
   body, button { cursor: auto; }
   .cursor { display: none; }
   .node span { opacity: 1; }
+}
+
+/* Cohort application (application.asb9.club and /apply) */
+.cohort { min-height: 100svh; background: var(--ivory); color: var(--black); padding: 0 20px 12vh; }
+.cohort, .cohort * { cursor: auto; }
+.cohort button, .cohort a, .cohort .cohort-choices label { cursor: pointer; }
+.cohort ::selection { background: var(--black); color: var(--ivory); }
+.cohort-shell { max-width: 720px; margin: 0 auto; scroll-margin-top: 0; }
+.cohort-header { display: flex; justify-content: space-between; gap: 16px; padding: 28px 0 18px; }
+.cohort-eyebrow { font: 10px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: #5f5e58; }
+.cohort-progress { height: 2px; background: rgba(10,10,9,.12); }
+.cohort-progress span { display: block; height: 100%; background: var(--black); transition: width .4s ease; }
+.cohort-intro { padding: 9vh 0 2vh; }
+.cohort-intro h1, .cohort-done h1 { margin: 0 0 28px; font-weight: 300; font-size: clamp(44px, 8vw, 84px); line-height: .92; letter-spacing: -.05em; }
+.cohort-intro h1 em { font-family: var(--serif); }
+.cohort-intro p { font-size: 15px; line-height: 1.65; max-width: 560px; }
+.cohort-facts { font: 11px/1.8 var(--mono) !important; text-transform: uppercase; letter-spacing: .06em; border-top: 1px solid rgba(10,10,9,.2); border-bottom: 1px solid rgba(10,10,9,.2); padding: 14px 0; max-width: none !important; }
+.cohort-howto { color: #4a4943; font-size: 13px !important; }
+.cohort-form h2 { margin: 7vh 0 6px; font: italic 300 clamp(38px, 6vw, 60px)/1 var(--serif); letter-spacing: -.03em; }
+.cohort-section-intro { margin: 0 0 8px; color: #4a4943; font-size: 14px; line-height: 1.65; }
+.cohort-field { padding: 34px 0 6px; }
+.cohort-field > label { display: block; font-size: 17px; line-height: 1.4; font-weight: 500; }
+.cohort-optional { color: #77766f; font-weight: 400; }
+.cohort-hint { margin: 8px 0 0; color: #5f5e58; font-size: 13px; line-height: 1.55; }
+.cohort-field input, .cohort-field textarea { display: block; width: 100%; margin-top: 14px; border: 0; border-bottom: 1px solid rgba(10,10,9,.35); border-radius: 0; background: transparent; padding: 10px 0 12px; outline: 0; resize: vertical; font-size: 15px; line-height: 1.6; }
+.cohort-field input { cursor: text; }
+.cohort-field textarea { cursor: text; }
+.cohort-field input:focus, .cohort-field textarea:focus { border-color: var(--black); }
+.cohort-field ::placeholder { color: #8d8c84; }
+.cohort-field--error input, .cohort-field--error textarea { border-color: #9c3025; }
+.cohort-meta { display: flex; justify-content: space-between; gap: 12px; min-height: 18px; margin-top: 8px; font: 10px var(--mono); color: #77766f; }
+.cohort-field-error, .cohort-error { color: #9c3025; }
+.cohort-over { color: #9c3025; }
+.cohort-looking { margin: 10px 0 0; padding-left: 12px; border-left: 1px solid rgba(10,10,9,.3); color: #4a4943; font-size: 12px; line-height: 1.55; }
+.cohort-looking span { display: block; font: 9px var(--mono); text-transform: uppercase; letter-spacing: .1em; color: #77766f; margin-bottom: 2px; }
+.cohort-choices { display: flex; gap: 10px; margin-top: 14px; outline: 0; }
+.cohort-choices label { display: flex; align-items: center; justify-content: center; min-width: 110px; padding: 14px 20px; border: 1px solid rgba(10,10,9,.35); font: 12px var(--mono); text-transform: uppercase; letter-spacing: .08em; transition: background .2s, color .2s; }
+.cohort-choices label:hover { border-color: var(--black); }
+.cohort-choices label.is-selected { background: var(--black); color: var(--ivory); border-color: var(--black); }
+.cohort-choices label:has(input:focus-visible) { outline: 2px solid var(--black); outline-offset: 2px; }
+.cohort-choices input { position: absolute; opacity: 0; pointer-events: none; }
+.cohort-field--error .cohort-choices label { border-color: #9c3025; }
+.cohort-nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 48px; }
+.cohort-next { background: var(--black); color: var(--ivory); padding: 20px 28px; font: 12px var(--mono); text-transform: uppercase; letter-spacing: .1em; }
+.cohort-next:disabled { opacity: .6; cursor: wait; }
+.cohort-back { background: transparent; padding: 20px 0; font: 12px var(--mono); text-transform: uppercase; letter-spacing: .1em; color: #4a4943; }
+.cohort-back:hover { color: var(--black); }
+.cohort-saved { margin: 18px 0 0; font: 10px var(--mono); color: #8d8c84; text-align: right; }
+.cohort-error { margin: 32px 0 0; font-size: 13px; line-height: 1.6; }
+.cohort-review { border-top: 1px solid rgba(10,10,9,.2); padding: 22px 0 8px; margin-top: 28px; }
+.cohort-review-head { display: flex; justify-content: space-between; align-items: baseline; }
+.cohort-review h3 { margin: 0; font: 11px var(--mono); text-transform: uppercase; letter-spacing: .1em; }
+.cohort-review-head button { background: transparent; font: 11px var(--mono); text-decoration: underline; text-underline-offset: 3px; }
+.cohort-review dl { margin: 10px 0 0; }
+.cohort-review dl > div { padding: 12px 0; }
+.cohort-review dt { font-size: 12px; color: #5f5e58; line-height: 1.5; }
+.cohort-review dd { margin: 4px 0 0; font-size: 14px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cohort-done { padding-top: 22vh; }
+.cohort-done .cohort-eyebrow { display: block; margin-bottom: 18px; }
+.cohort-done p { font-size: 15px; line-height: 1.7; max-width: 520px; }
+.cohort-serif { font: italic 300 34px var(--serif) !important; }
+@media (max-width: 760px) {
+  .cohort-header { flex-direction: column; gap: 6px; }
+  .cohort-nav { flex-direction: column-reverse; align-items: stretch; }
+  .cohort-next { width: 100%; }
+  .cohort-back { text-align: center; }
+  .cohort-saved { text-align: center; }
 }
