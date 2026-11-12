@@ -95,6 +95,7 @@ const sections: Section[] = [
 const allFields = sections.flatMap((s) => s.fields)
 const emptyAnswers: Answers = Object.fromEntries(allFields.map((f) => [f.id, '']))
 const draftKey = 'asb9-cohort-01-draft'
+const submissionIdKey = 'asb9-cohort-01-submission-id'
 const reviewStep = sections.length
 
 const countWords = (value: string) => value.trim().split(/\s+/).filter(Boolean).length
@@ -184,15 +185,21 @@ export default function CohortApplication() {
     }
 
     const payload = Object.fromEntries(allFields.filter((f) => visible(f, answers)).map((f) => [f.id, answers[f.id].trim()]))
+    // Reused across retries so a resend after a dropped connection doesn't add a second row.
+    const submissionId = localStorage.getItem(submissionIdKey) ?? crypto.randomUUID()
+    localStorage.setItem(submissionIdKey, submissionId)
     setStatus('submitting')
     try {
+      // text/plain keeps this a simple request: Google Apps Script web apps can't answer a CORS preflight.
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cohort: '01', submittedAt: new Date().toISOString(), ...payload }),
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ cohort: '01', submissionId, ...payload }),
       })
-      if (!response.ok) throw new Error(String(response.status))
+      const result: { ok?: boolean } = await response.json()
+      if (!response.ok || result.ok !== true) throw new Error(String(response.status))
       localStorage.removeItem(draftKey)
+      localStorage.removeItem(submissionIdKey)
       setStatus('done')
     } catch {
       setStatus('error')
