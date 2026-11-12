@@ -1,20 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 
 const paths = [
-  { id: 'build', label: 'I build', find: 'A sharper problem', detail: 'Prototype in public. Find the person who sees the edge you missed.' },
-  { id: 'study', label: 'I research', find: 'A way into practice', detail: 'Bring rigor to unfinished questions—and test them beyond the page.' },
-  { id: 'gather', label: 'I convene', find: 'Unlikely collaborators', detail: 'Create the room where technical, cultural and commercial instincts collide.' },
-  { id: 'question', label: 'I question', find: 'People who answer by making', detail: 'Pressure-test assumptions with peers who turn conversation into evidence.' },
+  { id: 'ship', label: 'I ship', find: 'Proof of work', detail: 'Something real, with a link. Be specific about your part. “I had the idea” doesn’t count.' },
+  { id: 'deep', label: 'I go deep', find: 'Self-driven obsession', detail: 'What you learned that nobody asked you to, how you learned it, and why it mattered.' },
+  { id: 'disagree', label: 'I disagree', find: 'Actual conviction', detail: 'A belief most smart people around you reject. Independent thinking, not contrarianism for clout.' },
+  { id: 'agency', label: 'I find a way', find: 'Agency', detail: 'Something you “shouldn’t” have got at your age, and how you got it. Not “my dad knew someone.”' },
 ]
 
 const nodes = [
-  { x: 15, y: 55, label: 'Systems', copy: 'How might the underlying structure change?' },
-  { x: 30, y: 22, label: 'Tools', copy: 'Small instruments that expand what a person can do.' },
-  { x: 49, y: 51, label: 'Research', copy: 'Questions made tangible, observable and useful.' },
-  { x: 67, y: 20, label: 'Culture', copy: 'The context that decides what technology becomes.' },
-  { x: 84, y: 58, label: 'Ventures', copy: 'Durable answers to consequential problems.' },
-  { x: 61, y: 82, label: 'Experiments', copy: 'Fast, honest ways to learn what is real.' },
-  { x: 33, y: 84, label: 'People', copy: 'Distinct minds, generous with their attention.' },
+  { x: 15, y: 55, label: 'Nine spots', copy: 'Solo, or teams of up to three. Every person is judged individually.' },
+  { x: 30, y: 22, label: 'Online', copy: 'Join from anywhere. It’s free.' },
+  { x: 49, y: 51, label: 'Four weeks', copy: 'About 6–8 hours a week, live sessions included.' },
+  { x: 67, y: 20, label: 'Ages 14–20', copy: 'At the start of the cohort.' },
+  { x: 84, y: 58, label: 'Givers', copy: 'Everyone brings a real strength to the other eight.' },
+  { x: 61, y: 82, label: 'Outcomes', copy: 'You say, specifically, what these four weeks should change.' },
+  { x: 33, y: 84, label: 'Peers', copy: 'People who make things and think their own thoughts.' },
 ]
 
 function Mark({ small = false }: { small?: boolean }) {
@@ -82,32 +82,32 @@ function App() {
       <header className="nav">
         <a className="wordmark" href="#top" aria-label="ASB9 Club home"><Mark small /> ASB9 <span>/ CLUB</span></a>
         <nav aria-label="Main navigation">
-          <a href="#ethos">Ethos</a><a href="#network">Network</a><a href="#apply">Apply</a>
+          <a href="#ethos">Ethos</a><a href="#network">Cohort</a><a href="#apply">Apply</a>
         </nav>
       </header>
 
       <section className="hero" id="top">
-        <p className="eyebrow hero-index">Private signal · Public ambition</p>
+        <p className="eyebrow hero-index">Cohort 01 · Applications open</p>
         <div className="hero-mark"><Mark /></div>
         <h1><span>For the ones</span><span>already in motion.</span></h1>
-        <p className="hero-copy">A selective club for young builders, founders, developers and researchers who would rather make the future than predict it.</p>
+        <p className="hero-copy">A free, four-week online cohort for nine builders aged 14–20. Solo or teams of up to three. We pick people, not ideas.</p>
         <a className="scroll-cue" href="#ethos"><span>Enter the club</span><i /></a>
       </section>
 
       <section className="manifesto" id="ethos">
         <p className="eyebrow reveal">01 / The premise</p>
-        <p className="manifesto-line reveal">ASB9 isn't about<br />collecting <em>connections.</em></p>
-        <p className="manifesto-line manifesto-line--right reveal">It's about what happens<br />when the <em>right people</em><br />find each other.</p>
-        <aside className="margin-note reveal">No audience.<br />No passive membership.<br />No prescribed path.</aside>
+        <p className="manifesto-line reveal">You don't need<br />a <em>startup.</em></p>
+        <p className="manifesto-line manifesto-line--right reveal">You need <em>proof</em><br />that you make things<br />and think for yourself.</p>
+        <aside className="margin-note reveal">No co-founder needed.<br />No plan needed.<br />No resume lines.</aside>
       </section>
 
       <section className="discovery">
         <div className="section-head reveal">
-          <p className="eyebrow">02 / Find your position</p>
-          <p>Contribution is the price of admission.<br />Curiosity is the only uniform.</p>
+          <p className="eyebrow">02 / What we look for</p>
+          <p>Four things we read for.<br />None of them is a pitch deck.</p>
         </div>
         <div className="discovery-grid reveal">
-          <div className="path-list" role="tablist" aria-label="Choose how you contribute">
+          <div className="path-list" role="tablist" aria-label="What we look for">
             {paths.map((path, index) => (
               <button key={path.id} role="tab" aria-selected={activePath === index} onClick={() => setActivePath(index)}>
                 <span>0{index + 1}</span>{path.label}<b>↗</b>
@@ -115,18 +115,18 @@ function App() {
             ))}
           </div>
           <div className="path-result" role="tabpanel" aria-live="polite">
-            <p>You may find</p>
+            <p>We look for</p>
             <h2>{paths[activePath].find}</h2>
             <p>{paths[activePath].detail}</p>
-            <span>ASB9 / POSITION {activePath + 1}</span>
+            <span>ASB9 / SIGNAL {activePath + 1}</span>
           </div>
         </div>
       </section>
 
       <section className="network" id="network">
         <div className="section-head reveal">
-          <p className="eyebrow">03 / The field</p>
-          <p>Not a directory. A live surface for collisions.</p>
+          <p className="eyebrow">03 / The cohort</p>
+          <p>Nine people. Four weeks. Online and free.</p>
         </div>
         <div className="network-stage reveal">
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
@@ -158,9 +158,9 @@ function App() {
         <p className="eyebrow reveal">04 / Selection</p>
         <h2 className="reveal">Signal recognizes<br /><em>signal.</em></h2>
         <div className="selection-list reveal">
-          <article><span>01</span><h3>Show your work</h3><p>Finished or not. We care about momentum, judgment and the questions pulling you forward.</p></article>
-          <article><span>02</span><h3>Meet a member</h3><p>A conversation, not an interview. We look for generosity, intensity and something distinct.</p></article>
-          <article><span>03</span><h3>Enter with intent</h3><p>Arrive ready to offer a perspective, a problem, a skill—or the first move on something new.</p></article>
+          <article><span>01</span><h3>Apply</h3><p>Eight short sections: proof of work, how you think, why ASB9, and a 60-second unscripted video.</p></article>
+          <article><span>02</span><h3>We watch and read</h3><p>Your video first, then your answers. Forty honest words beat 150 polished ones.</p></article>
+          <article><span>03</span><h3>We call you</h3><p>If we see someone who actually makes things and thinks their own thoughts, we’ll call you.</p></article>
         </div>
       </section>
 
@@ -168,7 +168,7 @@ function App() {
         <div className="apply-intro reveal">
           <p className="eyebrow">05 / Knock</p>
           <h2>The door is<br /><em>not hidden.</em></h2>
-          <p>It simply asks that you arrive as yourself. Tell us what has your attention and what you want to make possible.</p>
+          <p>Write like you talk. Short answers beat long ones. If it reads like a LinkedIn post or a ChatGPT answer, it goes to the bottom of the pile.</p>
         </div>
         <div className="apply-cta reveal">
           <p className="eyebrow">Cohort 01 · Applications open</p>
@@ -187,7 +187,7 @@ function App() {
       </section>
 
       <footer>
-        <div><Mark small /><span>ASB9 CLUB<br />Est. for what comes next</span></div>
+        <div><Mark small /><span>ASB9 CLUB<br />Cohort 01 · Ages 14–20</span></div>
         <button
           className="hold"
           onPointerDown={beginHold}
@@ -198,7 +198,7 @@ function App() {
           <span className="hold-fill" style={{ width: `${hold}%` }} />
           <span className="hold-copy">{hold > 0 ? 'Hold your intention' : 'Press and hold to apply'}</span>
         </button>
-        <p>For builders of things,<br />systems and new realities.</p>
+        <p>For people who make things<br />and think their own thoughts.</p>
       </footer>
     </main>
   )
