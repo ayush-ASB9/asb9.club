@@ -40,8 +40,10 @@ function App() {
       const target = event.target as HTMLElement
       setCursor((c) => ({ ...c, active: !!target.closest('button, a, input, textarea') }))
     }
+    const reset = () => setHold(0)
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerover', over)
+    window.addEventListener('pageshow', reset)
     const observer = new IntersectionObserver(
       (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('is-visible')),
       { threshold: 0.14 },
@@ -50,11 +52,13 @@ function App() {
     return () => {
       window.removeEventListener('pointermove', move)
       window.removeEventListener('pointerover', over)
+      window.removeEventListener('pageshow', reset)
       observer.disconnect()
     }
   }, [])
 
   const beginHold = () => {
+    if (holdTimer.current) window.clearInterval(holdTimer.current)
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       window.location.assign('/apply')
       return
@@ -181,19 +185,22 @@ function App() {
             <li><span>Cost</span>Free</li>
             <li><span>Ages</span>14–20</li>
           </ul>
-          <a className="submit" href="/apply"><span>Start your application</span><b>↗</b></a>
-          <p className="privacy-note">Eight short sections, one at a time. Your answers save as you go.</p>
+          <a className="hold-hint" href="#hold"><b aria-hidden="true">↓</b><span>To start, press and hold the button at the bottom of this page.</span></a>
+          <p className="privacy-note">It takes one second of intent. Eight short sections, one at a time. Your answers save as you go.</p>
         </div>
       </section>
 
       <footer>
         <div><Mark small /><span>ASB9 CLUB<br />Cohort 01 · Ages 14–20</span></div>
         <button
+          id="hold"
           className="hold"
           onPointerDown={beginHold}
           onPointerUp={endHold}
           onPointerLeave={endHold}
-          onKeyDown={(e) => e.key === 'Enter' && window.location.assign('/apply')}
+          onPointerCancel={endHold}
+          onContextMenu={(e) => e.preventDefault()}
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && window.location.assign('/apply')}
         >
           <span className="hold-fill" style={{ width: `${hold}%` }} />
           <span className="hold-copy">{hold > 0 ? 'Hold your intention' : 'Press and hold to apply'}</span>
