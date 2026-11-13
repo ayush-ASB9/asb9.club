@@ -139,3 +139,19 @@ function safe(value) {
 function reply(body) {
   return ContentService.createTextOutput(JSON.stringify(body)).setMimeType(ContentService.MimeType.JSON)
 }
+
+// Run this from the Apps Script editor (pick checkSetup in the function menu, then Run).
+// The Execution log shows which account and Sheet applications are saved to, how many
+// there are, and it emails you a test alert.
+function checkSetup() {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
+  if (!spreadsheet) throw new Error('This script is not attached to a Sheet. Open the Sheet and use Extensions → Apps Script.')
+  const sheet = spreadsheet.getSheetByName(SHEET_NAME)
+  const owner = Session.getEffectiveUser().getEmail()
+  console.log('Google account: ' + owner)
+  console.log('Sheet: ' + spreadsheet.getName() + ' → ' + spreadsheet.getUrl())
+  console.log(sheet ? 'Applications saved: ' + Math.max(sheet.getLastRow() - 1, 0) + ' (in the "' + SHEET_NAME + '" tab)' : 'No "' + SHEET_NAME + '" tab yet: nothing has been saved to this Sheet.')
+  const to = NOTIFY_EMAIL || owner
+  MailApp.sendEmail(to, 'ASB9 test alert', 'Email alerts work.\n\nApplications are saved here: ' + spreadsheet.getUrl())
+  console.log('Test email sent to ' + to + '. Emails left today: ' + MailApp.getRemainingDailyQuota())
+}
