@@ -94,6 +94,9 @@ const sections: Section[] = [
 
 const allFields = sections.flatMap((s) => s.fields)
 const emptyAnswers: Answers = Object.fromEntries(allFields.map((f) => [f.id, '']))
+// Google Apps Script web app that writes each application to the Cohort 01 Sheet (see google-sheet/).
+// It only adds rows, so it is safe to ship in the site; VITE_COHORT_APPLICATION_URL overrides it for testing.
+const endpoint = import.meta.env.VITE_COHORT_APPLICATION_URL || 'https://script.google.com/macros/s/AKfycbypTJlGeeipJUBQ473ETmhB6qoMENySkleKglw49HceBum-E_kCaq7hqBb0kpdXoRbXwQ/exec'
 const draftKey = 'asb9-cohort-01-draft'
 const submissionIdKey = 'asb9-cohort-01-submission-id'
 const reviewStep = sections.length
@@ -174,13 +177,6 @@ export default function CohortApplication() {
     if (invalidSection !== -1) {
       goTo(invalidSection)
       setErrors(sectionErrors(invalidSection, answers))
-      return
-    }
-
-    const endpoint = import.meta.env.VITE_COHORT_APPLICATION_URL
-    if (!endpoint) {
-      setStatus('error')
-      setStatusMessage('Submissions are not connected yet, so nothing was sent. Your answers are saved on this device.')
       return
     }
 
