@@ -6,6 +6,10 @@
 
 const SHEET_NAME = 'Applications'
 
+// Where new-application alerts go. Leave as '' to send them to the Google
+// account that owns this script.
+const NOTIFY_EMAIL = ''
+
 // Column order in the sheet. Keys match the field ids in src/CohortApplication.tsx.
 const COLUMNS = [
   ['submittedAt', 'Submitted at'],
@@ -71,10 +75,40 @@ function doPost(e) {
       if (existing) return reply({ ok: true, duplicate: true })
     }
     sheet.appendRow(COLUMNS.map(([key]) => (key === 'submittedAt' ? new Date() : safe(clean(data[key])))))
-    return reply({ ok: true })
   } finally {
     lock.releaseLock()
   }
+  // The row is already saved, so a failed email never loses an application.
+  try {
+    notify(data)
+  } catch (err) {
+    console.error('Application email failed: ' + err)
+  }
+  return reply({ ok: true })
+}
+
+function notify(data) {
+  const to = NOTIFY_EMAIL || Session.getEffectiveUser().getEmail()
+  const name = clean(data.fullName).replace(/[\r\n]+/g, ' ')
+  const applicantEmail = clean(data.email)
+  const answered = COLUMNS.filter(([key]) => key !== 'submittedAt' && key !== 'submissionId' && clean(data[key]))
+  const text = answered.map(([key, label]) => label + '\n' + clean(data[key])).join('\n\n')
+  const html = answered
+    .map(([key, label]) => '<p><b>' + escapeHtml(label) + '</b><br>' + escapeHtml(clean(data[key])).replace(/\n/g, '<br>') + '</p>')
+    .join('')
+  const sheetUrl = SpreadsheetApp.getActiveSpreadsheet().getUrl()
+  MailApp.sendEmail({
+    to: to,
+    subject: 'New ASB9 Cohort 01 application: ' + name + ' (' + clean(data.age) + ')',
+    body: text + '\n\nAll applications: ' + sheetUrl,
+    htmlBody: html + '<p><a href="' + sheetUrl + '">Open all applications</a></p>',
+    replyTo: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(applicantEmail) ? applicantEmail : undefined,
+    name: 'ASB9 Applications',
+  })
+}
+
+function escapeHtml(value) {
+  return value.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 }
 
 // Lets you open the web app URL in a browser to check it is deployed.

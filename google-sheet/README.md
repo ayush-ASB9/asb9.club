@@ -19,6 +19,12 @@ To check step 6, open the Web app URL in your browser: it should show `{"ok":tru
 
 The `Applications` tab and its header row are created on the first submission.
 
+## Email alerts
+
+Each new application is also emailed to the Google account that owns the script, with every answer and a link to the Sheet. Replying to the email replies to the applicant. To send alerts somewhere else, set `NOTIFY_EMAIL` at the top of `Code.gs`. Google allows about 100 of these emails a day on a free account; if the limit is hit, the application is still saved to the Sheet.
+
+The first time you deploy a version with email alerts, Google asks you to authorize again, this time to "Send email as you". Allow it.
+
 ## Changing the script later
 
 Edit the code in Apps Script, then **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy**.
